@@ -12,7 +12,7 @@ additional formats like ``cli`` or ``Pandas DataFrame``, you should install the
 appropriate tablib dependencies (e.g. ``pip install tablib[pandas]``). Read
 more on the `tablib format documentation page`_.
 
-.. tablib format documentation page: https://tablib.readthedocs.io/en/stable/formats/
+.. _tablib format documentation page: https://tablib.readthedocs.io/en/stable/formats/
 
 Alternatively, you can install the git repository directly to obtain the
 development version::
@@ -78,13 +78,27 @@ You can use the following directives in your settings file:
     permission code. Default is ``None`` which means everybody can execute
     export action.
 
+``IMPORT_EXPORT_CHUNK_SIZE``
+    Global setting to define the bulk size in which data is exported. Useful
+    if memory consumption is of the essence. Can also be set per ``Resource``
+
+
 Example app
 ===========
 
 There's an example application that showcases what django-import-export can do.
+It's assumed that you have set up a Python ``venv`` with all required dependencies
+or are otherwise able to run Django locally.
+
 You can run it via::
 
     cd tests
+    ./manage.py makemigration
+    ./manage.py migrate
+    ./manage.py createsuperuser
+    ./manage.py loaddata category.json book.json
     ./manage.py runserver
 
-Username and password for admin are ``admin`` and ``password``.
+Go to http://127.0.0.1:8000
+
+``books-sample.csv`` contains sample book data which can be imported.

@@ -19,9 +19,26 @@ class BooleanWidgetTest(TestCase):
     def test_clean(self):
         self.assertTrue(self.widget.clean("1"))
         self.assertTrue(self.widget.clean(1))
+        self.assertTrue(self.widget.clean("TRUE"))
+        self.assertTrue(self.widget.clean("True"))
+        self.assertTrue(self.widget.clean("true"))
+
+        self.assertFalse(self.widget.clean("0"))
+        self.assertFalse(self.widget.clean(0))
+        self.assertFalse(self.widget.clean("FALSE"))
+        self.assertFalse(self.widget.clean("False"))
+        self.assertFalse(self.widget.clean("false"))
+
         self.assertEqual(self.widget.clean(""), None)
+        self.assertEqual(self.widget.clean("NONE"), None)
+        self.assertEqual(self.widget.clean("None"), None)
+        self.assertEqual(self.widget.clean("none"), None)
+        self.assertEqual(self.widget.clean("NULL"), None)
+        self.assertEqual(self.widget.clean("null"), None)
 
     def test_render(self):
+        self.assertEqual(self.widget.render(True), "1")
+        self.assertEqual(self.widget.render(False), "0")
         self.assertEqual(self.widget.render(None), "")
 
 
@@ -111,8 +128,17 @@ class DurationWidgetTest(TestCase):
     def test_render_none(self):
         self.assertEqual(self.widget.render(None), "")
 
+    def test_render_zero(self):
+        self.assertEqual(self.widget.render(timedelta(0)), "0:00:00")
+
     def test_clean(self):
         self.assertEqual(self.widget.clean("1:57:00"), self.duration)
+
+    def test_clean_none(self):
+        self.assertEqual(self.widget.clean(""), None)
+
+    def test_clean_zero(self):
+        self.assertEqual(self.widget.clean("0:00:00"), timedelta(0))
 
 
 class FloatWidgetTest(TestCase):
@@ -145,6 +171,7 @@ class DecimalWidgetTest(TestCase):
 
     def test_clean(self):
         self.assertEqual(self.widget.clean("11.111"), self.value)
+        self.assertEqual(self.widget.clean(11.111), self.value)
 
     def test_render(self):
         self.assertEqual(self.widget.render(self.value), self.value)
